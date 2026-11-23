@@ -1,0 +1,6 @@
+{
+  "name": "ClinNote",
+  "description": "Medical PDF reader and annotator, markdown page notes, SM-2 spaced-repetition flashcards, question bank with timed exams, study dashboard, and encrypted-checksum ZIP backup.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

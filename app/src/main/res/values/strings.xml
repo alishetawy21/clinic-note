@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">ClinNote</string>
+    <string name="loading_workspace">Loading ClinNote workspace…</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_input_label">Value</string>
+    <string name="share_chooser_title">Save or share %1$s</string>
+    <string name="error_load_failed">Could not load the local ClinNote workspace.</string>
+    <string name="retry">Retry</string>
+    <string name="exit_prompt_title">Leave ClinNote?</string>
+    <string name="exit_prompt_message">Your notes, drawings, flashcards, and PDFs are saved locally on this device.</string>
+    <string name="exit_confirm">Exit</string>
+    <string name="export_ready_title">Export Ready</string>
+    <string name="export_save_device">Save to device</string>
+    <string name="export_share">Share</string>
+    <string name="export_saved_toast">Saved %1$s</string>
+    <string name="export_save_failed">Could not save file.</string>
+    <string name="close">Close</string>
+    <string name="file_size_label">%1$s · %2$s</string>
+</resources>
