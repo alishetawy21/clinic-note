@@ -1,5 +1,5 @@
 
-name: Build ClinNote APK
+name: ClinNote Professional Android Build
 
 on:
   workflow_dispatch:
@@ -9,35 +9,44 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: clinnote-android-build
+  cancel-in-progress: true
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Compile and Package ClinNote
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
 
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v5
 
-      - name: Set up Java
+      - name: Configure Java 17
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
+      - name: Configure Android SDK
         uses: android-actions/setup-android@v4
-        with:
-          packages: platform-tools
 
-      - name: Install Android SDK packages
+      - name: Install required Android SDK
         run: |
-          sdkmanager "platforms;android-36-ext1" "build-tools;36.0.0"
+          yes | sdkmanager --licenses
+          sdkmanager --install \
+            "platforms;android-36.1" \
+            "build-tools;36.0.0" \
+            "platform-tools"
 
-      - name: Set up Gradle
+      - name: Configure Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.3.1'
+          cache-cleanup: on-success
 
-      - name: Create debug keystore
+      - name: Generate debug signing key
         run: |
           keytool -genkeypair -v \
             -keystore debug.keystore \
@@ -49,13 +58,28 @@ jobs:
             -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Build APK
-        run: gradle --no-daemon :app:assembleDebug
+      - name: Verify Android SDK
+        run: |
+          test -d "$ANDROID_HOME/platforms/android-36.1"
+          test -d "$ANDROID_HOME/build-tools/36.0.0"
+          java -version
+          gradle --version
 
-      - name: Upload APK
+      - name: Compile debug APK
+        run: |
+          gradle --no-daemon --stacktrace \
+            :app:assembleDebug
+
+      - name: Verify APK output
+        run: |
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          ls -lh "$APK"
+
+      - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: ClinNote-APK
-          path: app/build/outputs/apk/debug/*.apk
+          name: ClinNote-Android-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
